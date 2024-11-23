@@ -1,32 +1,20 @@
 import pygame
 
-class Ground():
+class Ground:
+    def __init__(self, y, width, height, image_path):
+        self.y = y
+        self.width = width
+        self.height = height
+        self.image = self.load_image(image_path)
 
+    def load_image(self, path):
+        try:
+            image = pygame.image.load(path)
+            return pygame.transform.scale(image, (self.width, self.height))
+        except pygame.error:
+            print(f"Warning: Could not load image at {path}. Using fallback surface.")
+            return pygame.Surface((self.width, self.height)).convert()
 
-
-"""
-import pygame
-
-class Block():
-    def __init__(self, posIn : list[int, int], sizeIn : list[int, int], imageIn : pygame.Surface, water = False) -> None:
-        self.pos = posIn
-
-        self.size = sizeIn
-
-        self.image = pygame.transform.scale(imageIn, self.size)
-
-        self.water = water
-
-    def get(self) -> dict[str, int]:
-        return {
-            "x" : self.pos[0],
-            "y" : self.pos[1],
-            "w" : self.size[0],
-            "h" : self.size[1],
-            "water" : self.water
-        }
-
-    def draw(self, surfaceIn : pygame.Surface):
-        surfaceIn.blit(self.image, self.pos)
-
-"""
+    def draw(self, screen):
+        if self.image:
+            screen.blit(self.image, (0, self.y))
