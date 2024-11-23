@@ -9,7 +9,7 @@ class Player:
         self.height = 100
         self.image = self.load_image(image_path)
         self.state = "neutral"  # Current state
-        self.state_queue = deque(["neutral"] * (delay + 1))  # Queue for delayed states
+        self.state_queue = deque(["neutral"] * (delay*3 + 1))  # Queue for delayed states
         self.movement_queue = deque([(0, 0)] * (delay + 1))  # Queue for delayed movements
         self.lives = 5
 
@@ -29,7 +29,8 @@ class Player:
         # Update delayed movement
         self.movement_queue.append(movement)
         dx, dy = self.movement_queue.popleft()
-        self.x += dx
+        if (self.x + dx > 0) and (self.x + dx < 700):
+            self.x += dx
         self.y += dy
 
     def draw(self, screen):
@@ -40,5 +41,5 @@ class Player:
 
         # Optionally, draw the current state for debugging
         font = pygame.font.Font(None, 36)
-        text = font.render(self.state, True, (255, 255, 255))
+        text = font.render(self.state + str(self.lives), True, (255, 255, 255))
         screen.blit(text, (self.x, self.y - 30))

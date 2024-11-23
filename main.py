@@ -56,9 +56,9 @@ while running:
         player2_movement = (-3, 0)
 
     if keys[pygame.K_f]:  # Block (mirrored)
-        player2.update("attack", player2_movement)
-    elif keys[pygame.K_SPACE]:  # Attack (mirrored)
         player2.update("block", player2_movement)
+    elif keys[pygame.K_SPACE]:  # Attack (mirrored)
+        player2.update("attack", player2_movement)
     else:
         player2.update("neutral", player2_movement)
 
