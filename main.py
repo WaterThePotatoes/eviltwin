@@ -42,11 +42,11 @@ while running:
         player1_movement = (3, 0)
 
     if keys[pygame.K_f]:  # Block
-        player1.update("block", player1_movement)
+        player1.update("block", player1_movement, player2)
     elif keys[pygame.K_SPACE]:  # Attack
-        player1.update("attack", player1_movement)
+        player1.update("attack", player1_movement, player2)
     else:
-        player1.update("neutral", player1_movement)
+        player1.update("neutral", player1_movement, player2)
 
     # Input handling for player2
     player2_movement = (0, 0)
@@ -56,11 +56,11 @@ while running:
         player2_movement = (-3, 0)
 
     if keys[pygame.K_f]:  # Block (mirrored)
-        player2.update("block", player2_movement)
+        player2.update("block", player2_movement, player1)
     elif keys[pygame.K_SPACE]:  # Attack (mirrored)
-        player2.update("attack", player2_movement)
+        player2.update("attack", player2_movement, player1)
     else:
-        player2.update("neutral", player2_movement)
+        player2.update("neutral", player2_movement, player1)
 
     # Draw everything
     ground.draw(screen)
