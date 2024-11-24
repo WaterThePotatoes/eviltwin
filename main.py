@@ -93,7 +93,7 @@ while running:
             player1.update("block", player1_movement, player2, keys, blocks)
         elif keys[pygame.K_SPACE]:  # Attack
             player1.update("attack", player1_movement, player2, keys, blocks)
-        else:
+        else: # Neutral
             player1.update("neutral", player1_movement, player2, keys, blocks)
 
         # Input handling for player2
