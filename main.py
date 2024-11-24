@@ -101,20 +101,12 @@ while running:
 
         if player1.lives <= 0:
             lose = pygame.image.load("Assets/lose.png")
-            scaled_endgame = pygame.transform.scale(lose, (1200, 800))
-            #text = font.render("You have been destroyed by your twin enemy", False, (0, 0, 0))
+            scaled_endgame = pygame.transform.scale(lose, (600, 200))
         else:
             win = pygame.image.load("Assets/win.png")
-            scaled_endgame = pygame.transform.scale(win, (1200, 800))
-            #text = font.render("You win!", False, (0, 0, 0))
+            scaled_endgame = pygame.transform.scale(win, (600, 200))
 
-        screen.blit(scaled_endgame, (0, 0))
-
-        #textRect = text.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2))
-        #screen.blit(text, textRect)
-
-        #restart = pygame.Rect(300, 600, 150, 75)  # restart
-        #Quit = pygame.Rect(650, 600, 150, 75)  # quit
+        screen.blit(scaled_endgame, (300, 200))
 
         restart = pygame.image.load("Assets/restart.png")
         scaled_restart = pygame.transform.scale(restart, (150, 75))
@@ -122,16 +114,7 @@ while running:
         scaled_Quit = pygame.transform.scale(Quit, (150, 75))
 
         screen.blit(scaled_restart, (300, 600))
-        screen.blit(scaled_Quit, (650, 600))
-
-        #pygame.draw.rect(screen, (255, 0, 0), restart)
-        #pygame.draw.rect(screen, (255, 0, 0), Quit)
-
-        #restart_text = font.render("Restart", False, (0, 0, 0))
-        #screen.blit(restart_text, restart)
-
-        #quit_text = font.render("Quit", False, (0, 0, 0))
-        #screen.blit(quit_text, Quit)
+        screen.blit(scaled_Quit, (725, 600))
 
         pygame.display.flip()
 
@@ -144,15 +127,15 @@ while running:
                     running = False
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     x, y = pygame.mouse.get_pos()
-                    if restart.collidepoint(x, y):  # click restart button
-                        player1.lives = 5
+                    if 300 < x < 450 and 600 < y < 675:  # click restart button
+                        player1.lives = 1
                         player2.lives = 5
                         player1.x, player1.y = 100, GROUND_Y - 100
-                        player2.x, player2.y = 600, GROUND_Y - 100
+                        player2.x, player2.y = 1000, GROUND_Y - 100
                         player1.state = "neutral"
                         player2.state = "neutral"
                         wait = False
-                    elif Quit.collidepoint(x, y):  # click quit button
+                    elif 725 < x < 875 and 600 < y < 675:  # click quit button
                         wait = False
                         running = False
 
