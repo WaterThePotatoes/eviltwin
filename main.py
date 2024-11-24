@@ -168,7 +168,9 @@ while running:
                         player2.x, player2.y = 1000, GROUND_Y - 100
                         player1.state = "neutral"
                         player1.height = 100
+                        player2.height = 100
                         player2.state = "neutral"
+                        pygame.mixer.Channel(0).play(pygame.mixer.Sound('music.mp3'))
                         wait = False
                     elif 725 < x < 875 and 600 < y < 675:  # click quit button
                         wait = False
