@@ -2,6 +2,7 @@ import pygame
 import sys
 from player import Player
 from ground import Ground
+from mustache import Mustache
 
 # Initialize Pygame
 pygame.init()
@@ -11,19 +12,18 @@ SCREEN_WIDTH, SCREEN_HEIGHT = 800, 600
 GROUND_Y = SCREEN_HEIGHT - 50
 FPS = 120
 
-# Paths to assets
-PLAYER_IMAGE_PATH = "player.png"  # Replace with your player image path
 GROUND_IMAGE_PATH = "ground.jpg"  # Replace with your ground image path
 
 # Initialize screen and clock
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-pygame.display.set_caption("Delayed Input Game")
+pygame.display.set_caption("Evil Twins")
 clock = pygame.time.Clock()
 
 # Create objects
 ground = Ground(GROUND_Y, SCREEN_WIDTH, 50, GROUND_IMAGE_PATH)
-player1 = Player(100, GROUND_Y - 100, PLAYER_IMAGE_PATH)
-player2 = Player(600, GROUND_Y - 100, PLAYER_IMAGE_PATH, delay=30, lives=5, direction=-1)  # Delayed input
+player1 = Player(100, GROUND_Y - 100)
+player2 = Player(600, GROUND_Y - 100, delay=30, lives=5, direction=-1)  # Delayed input
+mustache = Mustache()
 
 # Game loop
 running = True
@@ -55,9 +55,11 @@ while running:
     if keys[pygame.K_LEFT]:  # Move left (mirrored)
         player2_movement = (3, 0)
         player2.direction = -1
+        mustache.direction = -1
     if keys[pygame.K_RIGHT]:  # Move right (mirrored)
         player2_movement = (-3, 0)
         player2.direction = 1
+        mustache.direction = 1
 
     if keys[pygame.K_f]:  # Block (mirrored)
         player2.update("block", player2_movement, player1)
@@ -70,6 +72,7 @@ while running:
     ground.draw(screen)
     player1.draw(screen)
     player2.draw(screen)
+    mustache.draw(screen, player2.x + 25, player2.y + 40)
 
     # Update display and tick
     pygame.display.flip()
