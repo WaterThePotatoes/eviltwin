@@ -1,5 +1,6 @@
 import pygame
 import sys
+import time
 from player import Player
 from mustache import Mustache
 from block import Block
@@ -34,12 +35,45 @@ block3 = Block(350, 600, 300, 300, "Assets/block.png")
 block4 = Block(400, 200, 200, 60, "Assets/block.png")
 blocks = [block1, block2, block3, block4, ground]
 
+# title and instructions
+title = pygame.image.load('Assets/title.png')
+scaled_title = pygame.transform.scale(title, (380, 300))
+title_size = scaled_title.get_rect().size
+centered_title = [(SCREEN_WIDTH - title_size[0]) / 2, (SCREEN_HEIGHT - title_size[1]) / 2]
+
+instructions = pygame.image.load('Assets/instructions.png')
+scaled_instructions = pygame.transform.scale(instructions, (300, 220))
+instructions_size = scaled_instructions.get_rect().size
+centered_instructions = [800, 50]
+
+# title fade in
+while pygame.key.get_pressed():
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+
+    for i in range(255):
+        scaled_title.set_alpha(i)
+        screen.blit(scaled_title, centered_title)
+        pygame.display.update()
+        time.sleep(0.001)
+
+    time.sleep(1.5)
+
+    for i in range(255, 0, -1):
+        scaled_title.set_alpha(i)
+        screen.blit(scaled_title, centered_title)
+        pygame.display.update()
+        time.sleep(0.001)
+    break
+
 # Game loop
 running = True
 while running:
-
     # Blit the scaled image to the screen at (0, 0)
     screen.blit(scaled_background, (0, 0))
+    screen.blit(scaled_instructions, centered_instructions)
+
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
@@ -133,6 +167,7 @@ while running:
                         player1.x, player1.y = 100, GROUND_Y - 100
                         player2.x, player2.y = 1000, GROUND_Y - 100
                         player1.state = "neutral"
+                        player1.height = 100
                         player2.state = "neutral"
                         wait = False
                     elif 725 < x < 875 and 600 < y < 675:  # click quit button
