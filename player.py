@@ -11,7 +11,7 @@ class Player:
         self.height = 100
         self.image = self.load_image(image_path)
         self.state = "neutral"  # Current state
-        self.state_queue = deque(["neutral"] * (delay * 3 + 1))  # Queue for delayed states
+        self.state_queue = deque(["neutral"] * (delay * 2 + 1))  # Queue for delayed states
         self.movement_queue = deque([(0, 0)] * (delay + 1))  # Queue for delayed movements
         self.lives = lives
         self.last_attack_time = 0
@@ -41,9 +41,8 @@ class Player:
 
         # Attack Logic: Check if the cooldown has elapsed
         current_time = pygame.time.get_ticks()
-
         if self.state == "attack" and current_time - self.last_attack_time >= self.attack_cooldown:
-                # Create the attack object
+            # Create the attack object
             if self.delay == 0:
                 a = 1 * self.direction
                 b = 100 * self.direction
@@ -52,14 +51,36 @@ class Player:
                 b = -100 * self.direction
             self.attack = Attack(self.x + b, self.y + 25, a, "attack_image.png")  # Example image path
 
-            # Check for collision with opponent's attack
-            if self.attack.x + self.attack.width >= opponent.x and self.attack.x <= opponent.x + opponent.width:
-                if opponent.state == "attack" and self.state != "block":
-                    self.lives -= 1  # Take damage from opponent's attack
-                if self.state == "attack" and opponent.state != "block":
-                    opponent.lives -= 1  # Opponent takes damage from your attack
+        # Check for collision only if an attack exists
+        # Check for collision only if an attack exists
+        if self.attack:
+            # Update attack position
+            self.attack.x += self.attack.direction*.5
 
-            self.last_attack_time = current_time
+            # Define attack range
+            if self.attack.direction > 0:  # Moving to the right
+                attack_start = self.attack.x
+                attack_end = self.attack.x + self.attack.width
+            else:  # Moving to the left
+                attack_start = self.attack.x - self.attack.width
+                attack_end = self.attack.x
+
+            # Define opponent range
+            opponent_start = opponent.x
+            opponent_end = opponent.x + opponent.width
+
+            # Check for overlap
+            if attack_end >= opponent_start and attack_start <= opponent_end:
+                print(
+                    f"Collision detected: Attack ({attack_start}, {attack_end}) vs Opponent ({opponent_start}, {opponent_end})")
+                current_time = pygame.time.get_ticks()
+                if opponent.state != "block" and current_time - self.last_attack_time >= self.attack_cooldown:
+                    opponent.lives -= 1
+                    self.last_attack_time = current_time
+
+            # Remove attack if out of bounds (optional cleanup)
+            if self.attack.x < 0 or self.attack.x > 800:
+                self.attack = None
 
     def draw(self, screen):
         if self.image:
