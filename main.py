@@ -23,7 +23,7 @@ clock = pygame.time.Clock()
 # Create objects
 ground = Ground(GROUND_Y, SCREEN_WIDTH, 50, GROUND_IMAGE_PATH)
 player1 = Player(100, GROUND_Y - 100, PLAYER_IMAGE_PATH)
-player2 = Player(600, GROUND_Y - 100, PLAYER_IMAGE_PATH, delay=30)  # Delayed input
+player2 = Player(600, GROUND_Y - 100, PLAYER_IMAGE_PATH, delay=30, lives=5, direction=-1)  # Delayed input
 
 # Game loop
 running = True
@@ -38,8 +38,10 @@ while running:
     player1_movement = (0, 0)
     if keys[pygame.K_LEFT]:  # Move left
         player1_movement = (-3, 0)
+        player1.direction = -1
     if keys[pygame.K_RIGHT]:  # Move right
         player1_movement = (3, 0)
+        player1.direction = 1
 
     if keys[pygame.K_f]:  # Block
         player1.update("block", player1_movement, player2)
@@ -52,8 +54,10 @@ while running:
     player2_movement = (0, 0)
     if keys[pygame.K_LEFT]:  # Move left (mirrored)
         player2_movement = (3, 0)
+        player2.direction = -1
     if keys[pygame.K_RIGHT]:  # Move right (mirrored)
         player2_movement = (-3, 0)
+        player2.direction = 1
 
     if keys[pygame.K_f]:  # Block (mirrored)
         player2.update("block", player2_movement, player1)
