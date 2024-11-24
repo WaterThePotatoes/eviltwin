@@ -44,55 +44,117 @@ while running:
         if event.type == pygame.QUIT:
             running = False
 
-    # Input handling for player1
-    keys = pygame.key.get_pressed()
-    player1_movement = (0, 0)
-    if keys[pygame.K_LEFT]:  # Move left
-        player1_movement = (-3, 0)
-        player1.direction = -1
-    if keys[pygame.K_RIGHT]:  # Move right
-        player1_movement = (3, 0)
-        player1.direction = 1
+    if player1.lives > 0 and player2.lives > 0:
+        # Input handling for player1
+        keys = pygame.key.get_pressed()
+        player1_movement = (0, 0)
+        if keys[pygame.K_LEFT]:  # Move left
+            player1_movement = (-3, 0)
+            player1.direction = -1
+        if keys[pygame.K_RIGHT]:  # Move right
+            player1_movement = (3, 0)
+            player1.direction = 1
 
-    if keys[pygame.K_f]:  # Block
-        player1.update("block", player1_movement, player2, keys, blocks)
-    elif keys[pygame.K_SPACE]:  # Attack
-        player1.update("attack", player1_movement, player2, keys, blocks)
+        if keys[pygame.K_f]:  # Block
+            player1.update("block", player1_movement, player2, keys, blocks)
+        elif keys[pygame.K_SPACE]:  # Attack
+            player1.update("attack", player1_movement, player2, keys, blocks)
+        else:
+            player1.update("neutral", player1_movement, player2, keys, blocks)
+
+        # Input handling for player2
+        player2_movement = (0, 0)
+        if keys[pygame.K_LEFT]:  # Move left (mirrored)
+            player2_movement = (3, 0)
+            player2.direction = 1
+            mustache.direction = -1
+        if keys[pygame.K_RIGHT]:  # Move right (mirrored)
+            player2_movement = (-3, 0)
+            player2.direction = -1
+            mustache.direction = 1
+
+        if keys[pygame.K_f]:  # Block (mirrored)
+            player2.update("block", player2_movement, player1, keys, blocks)
+        elif keys[pygame.K_SPACE]:  # Attack (mirrored)
+            player2.update("attack", player2_movement, player1, keys, blocks)
+        else:
+            player2.update("neutral", player2_movement, player1, keys, blocks)
+
+        # Draw everything
+        ground.draw(screen)
+        player1.draw(screen)
+        player2.draw(screen)
+
+        if player2.lives > 0:
+            mustache.draw(screen, player2.x + 25, player2.y + 40)
+
+        for block in blocks:
+            block.draw(screen)
+
+        # Update display and tick
+        pygame.display.flip()
+        clock.tick(FPS)
+
     else:
-        player1.update("neutral", player1_movement, player2, keys, blocks)
+        screen.blit(scaled_background, (0, 0))
+        font = pygame.font.SysFont('Comic Sans MS', 30)
 
-    # Input handling for player2
-    player2_movement = (0, 0)
-    if keys[pygame.K_LEFT]:  # Move left (mirrored)
-        player2_movement = (3, 0)
-        player2.direction = 1
-        mustache.direction = -1
-    if keys[pygame.K_RIGHT]:  # Move right (mirrored)
-        player2_movement = (-3, 0)
-        player2.direction = -1
-        mustache.direction = 1
+        if player1.lives <= 0:
+            lose = pygame.image.load("Assets/lose.png")
+            scaled_endgame = pygame.transform.scale(lose, (1200, 800))
+            #text = font.render("You have been destroyed by your twin enemy", False, (0, 0, 0))
+        else:
+            win = pygame.image.load("Assets/win.png")
+            scaled_endgame = pygame.transform.scale(win, (1200, 800))
+            #text = font.render("You win!", False, (0, 0, 0))
 
-    if keys[pygame.K_f]:  # Block (mirrored)
-        player2.update("block", player2_movement, player1, keys, blocks)
-    elif keys[pygame.K_SPACE]:  # Attack (mirrored)
-        player2.update("attack", player2_movement, player1, keys, blocks)
-    else:
-        player2.update("neutral", player2_movement, player1, keys, blocks)
+        screen.blit(scaled_endgame, (0, 0))
 
-    # Draw everything
-    ground.draw(screen)
-    player1.draw(screen)
-    player2.draw(screen)
+        #textRect = text.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2))
+        #screen.blit(text, textRect)
 
-    if player2.lives > 0:
-        mustache.draw(screen, player2.x + 25, player2.y + 40)
+        #restart = pygame.Rect(300, 600, 150, 75)  # restart
+        #Quit = pygame.Rect(650, 600, 150, 75)  # quit
 
-    for block in blocks:
-        block.draw(screen)
+        restart = pygame.image.load("Assets/restart.png")
+        scaled_restart = pygame.transform.scale(restart, (150, 75))
+        Quit = pygame.image.load("Assets/quit.png")
+        scaled_Quit = pygame.transform.scale(Quit, (150, 75))
 
-    # Update display and tick
-    pygame.display.flip()
-    clock.tick(FPS)
+        screen.blit(scaled_restart, (300, 600))
+        screen.blit(scaled_Quit, (650, 600))
+
+        #pygame.draw.rect(screen, (255, 0, 0), restart)
+        #pygame.draw.rect(screen, (255, 0, 0), Quit)
+
+        #restart_text = font.render("Restart", False, (0, 0, 0))
+        #screen.blit(restart_text, restart)
+
+        #quit_text = font.render("Quit", False, (0, 0, 0))
+        #screen.blit(quit_text, Quit)
+
+        pygame.display.flip()
+
+        # wait for quit/restart
+        wait = True
+        while wait:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    wait = False
+                    running = False
+                elif event.type == pygame.MOUSEBUTTONDOWN:
+                    x, y = pygame.mouse.get_pos()
+                    if restart.collidepoint(x, y):  # click restart button
+                        player1.lives = 5
+                        player2.lives = 5
+                        player1.x, player1.y = 100, GROUND_Y - 100
+                        player2.x, player2.y = 600, GROUND_Y - 100
+                        player1.state = "neutral"
+                        player2.state = "neutral"
+                        wait = False
+                    elif Quit.collidepoint(x, y):  # click quit button
+                        wait = False
+                        running = False
 
 pygame.quit()
 sys.exit()

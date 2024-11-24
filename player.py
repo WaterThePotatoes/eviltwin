@@ -57,7 +57,7 @@ class Player:
         self.movement_queue.append(movement)
         dx, dy = self.movement_queue.popleft()
         self.velo = dx
-        if 0 < self.x + dx < 1100:  # Ensure player stays within screen bounds
+        if 0 < self.x + dx < 1100:  #  and self.x + dx < 0 or self.x - dx    Ensure player stays within screen bounds
             self.x += dx
         else:
             self.velo = 0
